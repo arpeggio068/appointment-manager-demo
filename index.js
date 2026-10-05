@@ -1,5 +1,4 @@
-// -------------------------- Web Page Load Func ----------------------------------------------------
-// -------------------------- Web Page Load Func ----------------------------------------------------
+//--------------- HTML Return Func --------------------------------------------------------------------------
     async function include(fileName, elementId) {
         try {
             const response = await fetch(fileName);
@@ -113,7 +112,7 @@ function loadAddForm() {
                             class="form-control chk_date"
                             placeholder="เลือกวันนัด"
                             pattern="${datePattern}"
-                            onchange="return validateDateLeapYear()"
+                            onchange="return validateDateLeapYear()"                            
                             required
                         >
 
@@ -634,25 +633,18 @@ function loadAddHolidayForm() {
               </button>
 
               <div class="holiday-loading">
-                <span
-                  id="resp-spinner1"
-                  class="spinner-grow spinner-grow-sm text-danger d-none"
-                  role="status"
-                  aria-hidden="true"
+                <span id="resp-spinner1" class="spinner-grow spinner-grow-sm text-danger d-none" 
+                 role="status" aria-hidden="true"
                 ></span>
 
                 <span
-                  id="resp-spinner2"
-                  class="spinner-grow spinner-grow-sm text-warning d-none"
-                  role="status"
-                  aria-hidden="true"
+                  id="resp-spinner2" class="spinner-grow spinner-grow-sm text-warning d-none"
+                  role="status" aria-hidden="true"
                 ></span>
 
                 <span
-                  id="resp-spinner3"
-                  class="spinner-grow spinner-grow-sm text-info d-none"
-                  role="status"
-                  aria-hidden="true"
+                  id="resp-spinner3" class="spinner-grow spinner-grow-sm text-info d-none"
+                  role="status" aria-hidden="true"
                 ></span>
               </div>
             </div>
@@ -668,7 +660,97 @@ function loadAddHolidayForm() {
     </div>
   `;
 }
-    
+
+
+function loadAddUserForm(){
+  return `
+    <div class="holiday-page">
+      <section class="holiday-card">
+        <div class="holiday-card-header">
+          <div>
+            <h4 class="holiday-card-title">👥 จัดการผู้ใช้งาน</h4>
+            <p class="holiday-card-subtitle">จัดการข้อมูลและสิทธิ์การใช้งานระบบ</p>
+          </div>
+          <button id="btnOpenAddUser" type="button" class="btn btn-primary" onclick="openAddUserModal()">
+            ➕ เพิ่มผู้ใช้งาน
+          </button>
+        </div>
+      </section>
+      <section class="holiday-list-card">
+        <div id="table_users"></div>
+      </section>
+    </div>
+    <div class="modal fade" id="userFormModal" tabindex="-1" aria-labelledby="userFormTitle" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content holiday-card">
+          <div class="modal-header holiday-card-header">
+            <h4 id="userFormTitle" class="modal-title holiday-card-title">👤 เพิ่มผู้ใช้งาน</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="ปิด"></button>
+          </div>
+          <div class="modal-body holiday-card-body">
+            <form id="addUserForm" novalidate>
+              <input type="hidden" id="user_id" name="user_id" value="">
+              <div class="row g-3">
+                <div class="col-12 col-md-6">
+                  <label for="user_name" class="holiday-form-label">ชื่อผู้ใช้งาน <span class="required">*</span></label>
+                  <input type="text" id="user_name" name="user_name" class="form-control" placeholder="ชื่อสำหรับเข้าสู่ระบบ" autocomplete="off" required>
+                  <div class="invalid-feedback">กรุณาระบุชื่อผู้ใช้งาน</div>
+                </div>
+                <div class="col-12 col-md-6">
+                  <label for="user_password" class="holiday-form-label">ตั้งรหัสผ่าน<span class="required">*</span></label>
+                  <input type="text" id="user_password" name="user_password" class="form-control" placeholder="ตั้งรหัสผ่าน" 
+                    pattern="(?=.*[A-Za-z])(?=.*\\d)(?!.*\\s).{6,}"
+                    autocomplete="new-password" required
+                  >
+                  <div class="invalid-feedback">ประกอบด้วยภาษาอังกฤษและตัวเลขอย่างน้อย 6 ตัวอักษร</div>
+                </div>
+                <div class="col-12">
+                  <label for="user_realname" class="holiday-form-label">ชื่อจริง <span class="required">*</span></label>
+                  <input type="text" id="user_realname" name="user_realname" class="form-control" placeholder="ชื่อ-นามสกุล" required>
+                  <div class="invalid-feedback">กรุณาระบุชื่อจริง</div>
+                </div>
+                <div class="col-12 col-md-6">
+                  <label for="user_level" class="holiday-form-label">ระดับการใช้งาน <span class="required">*</span></label>
+                  <select id="user_level" name="user_level" class="form-select" required>
+                    <option value="user" selected>user</option>
+                    <option value="admin">admin</option>
+                  </select>
+                  <div class="invalid-feedback">กรุณาเลือกระดับการใช้งาน</div>
+                </div>
+                <div class="col-12 col-md-6">
+                  <label for="active" class="holiday-form-label">สถานะการใช้งาน <span class="required">*</span></label>
+                  <select id="active" name="active" class="form-select" required disabled>
+                    <option value="y" selected>y — เปิดใช้งาน</option>
+                    <option value="n">n — ปิดใช้งาน</option>
+                  </select>
+                  <div class="invalid-feedback">กรุณาเลือกสถานะการใช้งาน</div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer justify-content-start gap-2">
+            <button id="btnSaveUser" type="submit" form="addUserForm" class="btn btn-primary m-0">บันทึก</button>
+            <button id="btnEditUser" type="submit" form="addUserForm" class="btn btn-success m-0 d-none">แก้ไข</button>
+            <button id="btnCancelUser" type="button" class="btn btn-danger m-0 d-none" data-bs-dismiss="modal">ยกเลิก</button>
+            <div class="d-flex align-items-center gap-2 ms-2 my-0" role="status" aria-label="กำลังดำเนินการ">
+              <span id="resp-spinner1" class="spinner-grow spinner-grow-sm text-danger d-none" aria-hidden="true"></span>
+              <span id="resp-spinner2" class="spinner-grow spinner-grow-sm text-warning d-none" aria-hidden="true"></span>
+              <span id="resp-spinner3" class="spinner-grow spinner-grow-sm text-info d-none" aria-hidden="true"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+
+//--------------- End HTML Return Func --------------------------------------------------------------------------
+
+
+
+// -------------------------- Web Page Load Func ----------------------------------------------------
+// -------------------------- Web Page Load Func ----------------------------------------------------
    
 async function setAddForm() {
         console.log("เริ่ม setAddForm");
@@ -1164,10 +1246,137 @@ async function showAddHolidaysForm(event){
 }
 
 
-//
+async function setManageUserForm(){
+   console.log("เริ่ม setManageUserForm");
+   gUserDataArray = []
+    try {
+        const id = getTokenFromUrl();
 
-// -------------------------- Web Page Load Func ----------------------------------------------------
-// -------------------------- Web Page Load Func ----------------------------------------------------
+        if (!id) {
+            await Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "ข้อมูล web ไม่ถูกต้อง",
+                text: "ไม่พบข้อมูล web id",
+                showConfirmButton: true,
+                timer: 2500
+            });
+
+            return false;
+        }
+
+        const payload = {
+            id: id
+        };
+
+        const fd = new FormData();
+
+        fd.append("action", "apiGetUsersData");
+        fd.append("data", JSON.stringify(payload));
+
+        const res = await api(mainUrl, {
+            method: "POST",
+            redirect: "follow",
+            mode: "cors",
+            body: fd
+        });
+
+        // console.log("apiDataForSearch response:", res);
+
+        if (!res) {
+            throw new Error("ไม่พบข้อมูลตอบกลับจากหน้าจัดการผู้ใช้งาน");
+        }
+
+        if (res.status === "token_error") {
+            await Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "ข้อมูล web id ไม่ถูกต้อง",
+                text: res.message || "โปรดตรวจสอบ web link",
+                showConfirmButton: true,
+                timer: 2500
+            });
+
+            return false;
+        }
+
+        if (res.status !== "success") {
+            throw new Error(
+                res.message || "ระบบไม่สามารถโหลดข้อมูลเริ่มต้นได้"
+            );
+        }  
+        
+        letGoTrim();  
+
+        gUserDataArray = res.user        
+        showUsersTable(gUserDataArray)
+
+        console.log("setManageUserForm เรียบร้อย");
+
+        return true;
+
+    } catch (error) {
+        console.error("setManageUserForm error:", error);
+
+        await Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "โหลดข้อมูลเริ่มต้นไม่สำเร็จ",
+            text: error.message || "เกิดข้อผิดพลาดในการโหลดข้อมูลเริ่มต้น",
+            showConfirmButton: true
+        });
+
+        return false;
+    }
+
+}
+
+
+async function showManageUserForm(event) {
+  if (event) {
+        event.preventDefault();
+    }
+
+    if (!gIsLoggedIn) {
+        return;
+    }
+
+    try {
+        loadingStart();
+        
+        $("#app").html(loadAddUserForm());
+        
+        await setManageUserForm();       
+        
+       
+        //document.getElementById("date1")?.focus();
+
+        $("#addUserForm")
+          .off("submit")
+          .on("submit", async function(event){
+            event.preventDefault();
+            const userId = this.elements.namedItem("user_id").value;
+            if(userId !== ""){
+              await editUserAPI(event);
+            }else{
+              await addUser(event);
+            }
+        });
+
+    } catch (error) {
+        console.error("showManageUserForm error:", error);
+
+        await Swal.fire({
+            icon: "error",
+            title: "เกิดข้อผิดพลาด",
+            text: error.message || "ไม่สามารถเปิดหน้าจัดการผู้ใช้งานได้"
+        });
+
+    } finally {
+        loadingEnd();
+    }
+  
+}
 
 
 
@@ -1230,7 +1439,7 @@ function setupNavbarEvents() {
             await showTableForm();
         });
 
-      $("#holidays-link")
+    $("#holidays-link")
         .off("click")
         .on("click", async function (event) {
             event.preventDefault();
@@ -1256,7 +1465,39 @@ function setupNavbarEvents() {
 
             
             await showAddHolidaysForm();
-        });  
+      });
+      
+      
+      $("#manage-users-link")
+        .off("click")
+        .on("click", async function (event) {
+            event.preventDefault();
+
+            if (!gIsLoggedIn) {
+                return;
+            }  //navbarDropdown
+
+            setActiveNav("navbarDropdown");
+
+            if(gUserId !== '001'){
+              Swal.fire({
+                      position: 'center',
+                      icon: 'warning',
+                      title: 'คุณไม่มีสิทธิใช้งาน!',
+                      text:"สิทธิใช้งานเฉพาะ Master Admin เท่านั้น!",
+                      showConfirmButton: true,
+                      timer: 3000
+                    }) 
+
+              return
+
+            }           
+
+            
+            await showManageUserForm(event);
+      }); 
+        
+      
 }
 
 
@@ -1327,8 +1568,8 @@ async function initializeApp() {
 //------------------------------------ event config ------------------------------------------------------
 
 
-// -------------------------- Web Page Load Func ----------------------------------------------------
-// -------------------------- Web Page Load Func ----------------------------------------------------
+// -------------------------- End Web Page Load Func ----------------------------------------------------
+// -------------------------- End Web Page Load Func ----------------------------------------------------
    
 
 
@@ -1545,6 +1786,18 @@ function validateLogin(){
 
     return isValid;
   }
+
+
+  function validateAddUserForm(){
+    const form = document.getElementById("addUserForm")
+    
+    const isValid = form.checkValidity();
+
+    form.classList.add('was-validated');
+
+    return isValid;
+  }
+
 
   function validateAddHolidays(){   
     
@@ -1813,8 +2066,8 @@ function validateSurgApointTableForm(){
 //----------------------------------- Validate Func -----------------------------------------------//
 
 
-//--------------------- API Login Add Reccord  --------------------------------------------------------//
-//--------------------- API Login Add Reccord --------------------------------------------------------//
+//--------------------- API Login Add Reccord Print --------------------------------------------------------//
+//--------------------- API Login Add Reccord Print --------------------------------------------------------//
 async function api(url, options = {}) {
 
     const response = await fetch(url, options);
@@ -1839,7 +2092,7 @@ let gEmptyQ, gNameArr, gTelArr, gHolidays, gHolidaysAll, gFirstDate;
 let gName, gHN, gTel, gAddRecObj;
 let gSearchObjMain, gSearchData, gCupData, gInitDate, gEditDataId, gOriginHosp;
 
-let gDisabledDaysArray = [];
+let gDisabledDaysArray = [], gUserDataArray = [];
 let gIsLoggedIn = false;
 const gEnableDayOfWeek = [1, 3 , 4]
 const gMaxPerDay = 10;
@@ -2808,8 +3061,8 @@ async function printAddRec() {
 
 
 
-//--------------------- API Login Add Reccord  --------------------------------------------------------//
-//--------------------- API Login Add Reccord --------------------------------------------------------//
+//--------------------- End API Login Add Reccord Print  --------------------------------------------------------//
+//--------------------- End API Login Add Reccord Print --------------------------------------------------------//
 
 
 //-------------------------- Search for Edit and print ------------------------------------------------------
@@ -3226,7 +3479,7 @@ function printData(e) {
   });
 }
 
-//-------------------------- Search for Edit and print ------------------------------------------------------
+//-------------------------- End Search for Edit and print ------------------------------------------------------
 
 
 
@@ -3522,7 +3775,7 @@ function updateEditedRecordInAllArrays(editedData) {
 }
 
 
-//-------------------------- Edit Pt Record -----------------------------------------------------------------
+//-------------------------- End Edit Pt Record -----------------------------------------------------------------
 
 
 
@@ -3750,7 +4003,7 @@ function removeRecordById(array, dataId) {
 }
 
 
-//-------------------------- Delete Pt Record ----------------------------------------------------------------
+//-------------------------- End Delete Pt Record ----------------------------------------------------------------
 
 
 //-------------------------- Appointment Table ----------------------------------------------------------------
@@ -4249,8 +4502,8 @@ async function printSurgTable() {
   }
 }
 
-//-------------------------- Appointment Table ----------------------------------------------------------------
-//-------------------------- Appointment Table ----------------------------------------------------------------
+//-------------------------- End Appointment Table ----------------------------------------------------------------
+//-------------------------- End Appointment Table ----------------------------------------------------------------
 
 
 //-------------------------- Add Holidays ---------------------------------------------------------------------
@@ -4820,11 +5073,366 @@ async function addHoliday(event){
 }
 
 
-//-------------------------- Add Holidays ---------------------------------------------------------------------
-//-------------------------- Add Holidays ---------------------------------------------------------------------
+//-------------------------- End Add Holidays ---------------------------------------------------------------------
+//-------------------------- End Add Holidays ---------------------------------------------------------------------
 
 
-const mainUrl = 'https://script.google.com/macros/s/AKfycbyMdZpy3cx0ug7rqyL-LHEq8C3FSqNkKJ8vP_pWzVmE8Zifcbz5NWz8UVlvgZ0YkdqX/exec'
+
+//----------------------------- Manage Users ----------------------------------------------------------------------
+function showUsersTable(obj){
+  const rows = Array.isArray(obj) ? obj : [];
+  if($.fn.dataTable.isDataTable('#usersTable')){
+    $('#usersTable').DataTable().destroy();
+  }
+  let html = `
+    <div class="holiday-table-header">
+      <div>
+        <h5 class="holiday-table-title">รายการผู้ใช้งาน</h5>
+        <p class="holiday-table-subtitle">เลือก ✏️ เพื่อแก้ไขข้อมูลผู้ใช้งาน</p>
+      </div>
+      <span class="holiday-count">ทั้งหมด ${rows.length} รายการ</span>
+    </div>
+    <div class="table-responsive holiday-table-wrapper">
+      <table id="usersTable" class="table table-hover align-middle mb-0">
+        <thead>
+          <tr>
+            <th>ชื่อผู้ใช้งาน</th>
+            <th>ชื่อจริง</th>
+            <th>ระดับการใช้งาน</th>
+            <th>สถานะการใช้งาน</th>
+            <th>แก้ไข</th>           
+          </tr>
+        </thead>
+        <tbody>
+  `;
+  rows.forEach(row=>{
+    const {user_id, user_name, user_password, user_realname, user_level, active} = row;
+    const user = {
+      user_id:user_id ?? "",
+      user_name:user_name ?? "",
+      user_password:user_password ?? "",
+      user_realname:user_realname ?? "",
+      user_level:user_level ?? "",
+      active:active ?? ""
+    };
+    const dataset = escapeHtml(JSON.stringify(user));
+    html += `
+      <tr>
+        <td>${escapeHtml(user.user_name)}</td>
+        <td>${escapeHtml(user.user_realname)}</td>
+        <td>${escapeHtml(user.user_level)}</td>
+        <td>${escapeHtml(user.active)}</td>
+        <td class="text-center">
+          <button type="button" class="btn btn-outline-primary btn-sm edit-user-btn"
+            data-user="${dataset}" onclick="editUserForm(event)"
+            title="แก้ไขผู้ใช้งาน" aria-label="แก้ไขผู้ใช้งาน">
+            <span aria-hidden="true">✏️</span>
+          </button>
+        </td>        
+      </tr>
+    `;
+  });
+  html += `</tbody></table></div>`;
+  $('#table_users').html(html);
+  $('#usersTable').DataTable({
+    pageLength:10,
+    lengthMenu:[[5, 10, 25], [5, 10, 25]],
+    order:[],
+    autoWidth:false,
+    columnDefs:[
+      {targets:[0, 1, 2, 3, 4], className:'dt-center'},
+      {targets:[4], orderable:false, searchable:false}
+    ],
+    initComplete:function(){
+      const wrapper = $(this.api().table().container());
+      const controls = wrapper.find('.dataTables_length, .dataTables_filter, .dt-length, .dt-search');
+      controls.closest('.row').addClass('align-items-center');
+      controls.addClass('d-flex align-items-center gap-2 my-2');
+      wrapper.find('.dataTables_filter, .dt-search').addClass('justify-content-md-end');
+      controls.find('label').addClass('mb-0');
+    },
+    language:{
+      emptyTable:"ไม่พบข้อมูลผู้ใช้งาน",
+      search:"ค้นหา:",
+      lengthMenu:"แสดง _MENU_ รายการ",
+      info:"แสดง _START_ ถึง _END_ จาก _TOTAL_ รายการ",
+      infoEmpty:"แสดง 0 รายการ",
+      infoFiltered:"(กรองจากทั้งหมด _MAX_ รายการ)",
+      zeroRecords:"ไม่พบข้อมูลที่ค้นหา",
+      paginate:{first:"แรก", last:"สุดท้าย", next:"ถัดไป", previous:"ก่อนหน้า"}
+    }
+  });
+}
+
+function openAddUserModal(){
+  resetAddUserForm();
+  const modalElement = document.getElementById('userFormModal');
+  if(!modalElement) return;
+  modalElement.addEventListener('shown.bs.modal', ()=>{
+    document.getElementById('user_name').focus();
+  }, {once:true});
+  bootstrap.Modal.getOrCreateInstance(modalElement).show();
+}
+
+
+function editUserForm(event){
+  event.preventDefault();
+  const modalElement = document.getElementById('userFormModal');
+  if(!modalElement) return;
+  const user = JSON.parse(event.currentTarget.dataset.user);
+  resetAddUserForm();
+  ['user_id', 'user_name', 'user_password', 'user_realname', 'user_level', 'active'].forEach(id=>{
+    modalElement.querySelector('#' + id).value = user[id] ?? "";
+  });
+  modalElement.querySelector('#active').disabled = false;
+  modalElement.querySelector('#userFormTitle').textContent = '👤 แก้ไขผู้ใช้งาน';
+  modalElement.querySelector('#btnSaveUser').classList.add('d-none');
+  modalElement.querySelector('#btnEditUser').classList.remove('d-none');
+  modalElement.querySelector('#btnCancelUser').classList.remove('d-none');
+  modalElement.addEventListener('shown.bs.modal', ()=>{
+    modalElement.querySelector('#user_name').focus();
+  }, {once:true});
+  bootstrap.Modal.getOrCreateInstance(modalElement).show();
+}
+
+function resetAddUserForm(){
+  const form = document.getElementById('addUserForm');
+  if(!form) return;
+  form.reset();
+  form.classList.remove('was-validated');
+  form.querySelectorAll('.is-valid, .is-invalid').forEach(el=>{
+    el.classList.remove('is-valid', 'is-invalid');
+  });
+  ['user_id', 'user_name', 'user_password', 'user_realname'].forEach(id=>{
+    document.getElementById(id).value = "";
+  });
+  document.getElementById('user_level').value = "user";
+  document.getElementById('active').value = "y";
+  document.getElementById('active').disabled = true;
+  document.getElementById('userFormTitle').textContent = '👤 เพิ่มผู้ใช้งาน';
+  document.getElementById('btnSaveUser').classList.remove('d-none');
+  document.getElementById('btnEditUser').classList.add('d-none');
+  document.getElementById('btnCancelUser').classList.add('d-none');
+}
+
+
+async function addUser(event){
+  event.preventDefault();
+  const btn = document.getElementById("btnSaveUser");
+  if(btn.disabled) return;
+  if(!validateAddUserForm()) return;
+  const webId = getTokenFromUrl();
+  if(!webId){
+    await Swal.fire({
+      position:'center',
+      icon:'error',
+      title:'ข้อมูล Web ไม่ถูกต้อง',
+      text:'ไม่พบข้อมูล Web ID',
+      confirmButtonText:'ตกลง'
+    });
+    return;
+  }
+  const modalElement = document.getElementById('userFormModal');
+  const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+  const closeButtons = [...modalElement.querySelectorAll('[data-bs-dismiss="modal"]')];
+  const previousDisabled = closeButtons.map(button=>button.disabled);
+  const preventModalClose = event=>event.preventDefault();
+  modalElement.addEventListener('hide.bs.modal', preventModalClose);
+  closeButtons.forEach(button=>button.disabled = true);
+  btn.disabled = true;
+  try{
+    showSpin3();
+    const obj = {
+      id:webId,
+      user_name:$('#user_name').val(),
+      user_password:$('#user_password').val(),
+      user_realname:$('#user_realname').val(),
+      user_level:$('#user_level').val(),
+      admin_rec_id:gUserId || ""
+    };
+    const fd = new FormData();
+    fd.append('action', 'apiAddUser');
+    fd.append('data', JSON.stringify(obj));
+    const res = await api(mainUrl, {
+      method:'POST',
+      redirect:'follow',
+      mode:'cors',
+      body:fd
+    });
+    if(!res){
+      throw new Error('ไม่พบข้อมูลตอบกลับจากระบบ');
+    }
+    if(res.status === 'token_error'){
+      await Swal.fire({
+        position:'center',
+        icon:'error',
+        title:'ข้อมูล Web ID ไม่ถูกต้อง',
+        text:res.message || 'โปรดตรวจสอบ Web link',
+        confirmButtonText:'ตกลง'
+      });
+      return;
+    }
+    if(res.status !== 'success'){
+      throw new Error(res.message || 'ระบบไม่สามารถบันทึกผู้ใช้งานได้');
+    }
+    gUserDataArray = Array.isArray(res.user) ? res.user : [];
+    showUsersTable(gUserDataArray);
+    resetAddUserForm();
+    await Swal.fire({
+      position:'center',
+      icon:'success',
+      text:'บันทึกผู้ใช้งานสำเร็จ!',
+      showConfirmButton:false,
+      timer:2000
+    });
+  }catch(error){
+    console.error('addUser error:', error);
+    await Swal.fire({
+      position:'center',
+      icon:'error',
+      title:'บันทึกผู้ใช้งานไม่สำเร็จ',
+      text:error.message || 'เกิดข้อผิดพลาดในการบันทึกผู้ใช้งาน',
+      confirmButtonText:'ตกลง'
+    });
+  }finally{
+    modalElement.removeEventListener('hide.bs.modal', preventModalClose);
+    closeButtons.forEach((button, index)=>{
+      button.disabled = previousDisabled[index];
+    });
+    btn.disabled = false;
+    modal.hide();
+    hideSpin3();
+  }
+}
+
+async function editUserAPI(event) {
+  event.preventDefault();
+  const btn1 = document.getElementById("btnEditUser");
+  const btn2 = document.getElementById("btnCancelUser");
+  if(btn1.disabled) return;
+  if(!validateAddUserForm()) return;
+  const webId = getTokenFromUrl();
+  if(!webId){
+    await Swal.fire({
+      position:'center',
+      icon:'error',
+      title:'ข้อมูล Web ไม่ถูกต้อง',
+      text:'ไม่พบข้อมูล Web ID',
+      confirmButtonText:'ตกลง'
+    });
+    return;
+  }
+  const modalElement = document.getElementById('userFormModal');
+  const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+  const closeButtons = [...modalElement.querySelectorAll('[data-bs-dismiss="modal"]')];
+  const previousDisabled = closeButtons.map(button=>button.disabled);
+  const preventModalClose = event=>event.preventDefault();
+  modalElement.addEventListener('hide.bs.modal', preventModalClose);
+  closeButtons.forEach(button=>button.disabled = true);
+  btn1.disabled = true;
+  btn2.disabled = true;
+  try{
+    showSpin3();
+    const obj = {
+      id:webId,
+      user_id:$('#user_id').val(),
+      user_name:$('#user_name').val(),
+      user_password:$('#user_password').val(),
+      user_realname:$('#user_realname').val(),
+      user_level:$('#user_level').val(),
+      active:$('#active').val(),
+      admin_rec_id:gUserId || ""
+    };
+    const fd = new FormData();
+    fd.append('action', 'apiEditUser');
+    fd.append('data', JSON.stringify(obj));
+    const res = await api(mainUrl, {
+      method:'POST',
+      redirect:'follow',
+      mode:'cors',
+      body:fd
+    });
+    if(!res){
+      throw new Error('ไม่พบข้อมูลตอบกลับจากระบบ');
+    }
+
+    if(res.status === 'token_error'){
+      await Swal.fire({
+        position:'center',
+        icon:'error',
+        title:'ข้อมูล Web ID ไม่ถูกต้อง',
+        text:res.message || 'โปรดตรวจสอบ Web link',
+        confirmButtonText:'ตกลง'
+      });
+      return;
+    }
+
+    if(res.status !== 'success'){
+      throw new Error(res.message || 'ระบบไม่สามารถแก้ไขผู้ใช้งานได้');
+    }
+
+    if(res.message !== 'success_found_userId'){
+      await Swal.fire({
+        position:'center',
+        icon:'error',
+        title:'ข้อมูล User ID ไม่ถูกต้อง',
+        text:res.message || 'ไม่พบ User ID',
+        confirmButtonText:'ตกลง'
+      });
+      return;
+    }
+
+    gUserDataArray = gUserDataArray.map(user=>
+      String(user.user_id) === String(obj.user_id)
+        ? {
+            ...user,
+            user_name:obj.user_name,
+            user_password:obj.user_password,
+            user_realname:obj.user_realname,
+            user_level:obj.user_level,
+            active:obj.active
+          }
+        : user
+    );
+    
+    showUsersTable(gUserDataArray);
+    resetAddUserForm();
+    await Swal.fire({
+      position:'center',
+      icon:'success',
+      text:'แก้ไขผู้ใช้งานสำเร็จ!',
+      showConfirmButton:false,
+      timer:2000
+    });
+  }catch(error){
+    console.error('editUserAPI func error:', error);
+    await Swal.fire({
+      position:'center',
+      icon:'error',
+      title:'แก้ไขผู้ใช้งานไม่สำเร็จ',
+      text:error.message || 'เกิดข้อผิดพลาดในการแก้ไขผู้ใช้งาน',
+      confirmButtonText:'ตกลง'
+    });
+  }finally{
+    modalElement.removeEventListener('hide.bs.modal', preventModalClose);
+    closeButtons.forEach((button, index)=>{
+      button.disabled = previousDisabled[index];
+    });
+    btn1.disabled = false;
+    btn2.disabled = false;
+    modal.hide();
+    hideSpin3();
+  }
+}
+
+//----------------------------- End Manage Users ------------------------------------------------------------------
+
+
+
+//--------------------------- Dom load ----------------------------------------------------------------------------
+
+
+const mainUrl = 'https://script.google.com/macros/s/AKfycby0-_p9G3d69fC_6uPN1L4sO5h4018HMe1bLofSqE_05bzzUvlXBlrZytnosDCpYM0V/exec'
 
 
 
@@ -4872,3 +5480,6 @@ document.addEventListener("DOMContentLoaded",async function(){
     }
     
 }); 
+
+
+//--------------------------- End Dom load ----------------------------------------------------------------------------
