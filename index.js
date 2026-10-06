@@ -51,7 +51,7 @@ function loadAddForm() {
                             type="number"
                             id="hn"
                             class="form-control"
-                            placeholder="HN เฉพาะ รพร.เชียงของ เป็นค่าว่างได้"
+                            placeholder="HN หมายเลขผู้ป่วย เป็นค่าว่างได้"
                         >
                     </div>                    
 
