@@ -693,8 +693,9 @@ function loadAddUserForm(){
               <div class="row g-3">
                 <div class="col-12 col-md-6">
                   <label for="user_name" class="holiday-form-label">ชื่อผู้ใช้งาน <span class="required">*</span></label>
-                  <input type="text" id="user_name" name="user_name" class="form-control" placeholder="ชื่อสำหรับเข้าสู่ระบบ" autocomplete="off" required>
-                  <div class="invalid-feedback">กรุณาระบุชื่อผู้ใช้งาน</div>
+                  <input type="text" id="user_name" name="user_name" class="form-control"
+                    placeholder="ชื่อสำหรับเข้าสู่ระบบ" autocomplete="off" pattern="[^\\s]+" required>
+                  <div class="invalid-feedback">กรุณาระบุชื่อผู้ใช้งานที่ไม่มีช่องว่าง</div>
                 </div>
                 <div class="col-12 col-md-6">
                   <label for="user_password" class="holiday-form-label">ตั้งรหัสผ่าน<span class="required">*</span></label>
@@ -956,9 +957,9 @@ async function setSearchForm() {
          * userId 001 เห็นข้อมูลทั้งหมด
          * user อื่นเห็นเฉพาะข้อมูลที่ตนเองบันทึก
          */
-        if (gUserId !== "001") {
+        if (gUserLevel !== "admin") {
             gCupData = gSearchObjMain.filter(
-                row => row[6] === gUser_name
+                row => row[5] === gUserId
             );
         } else {
             gCupData = gSearchObjMain;
@@ -1484,7 +1485,7 @@ function setupNavbarEvents() {
                       position: 'center',
                       icon: 'warning',
                       title: 'คุณไม่มีสิทธิใช้งาน!',
-                      text:"สิทธิใช้งานเฉพาะ Master Admin เท่านั้น!",
+                      text:"สิทธิใช้งานเฉพาะ Super Admin เท่านั้น!",
                       showConfirmButton: true,
                       timer: 3000
                     }) 
@@ -2797,7 +2798,7 @@ async function printAddRec() {
               </h1>
 
               <p class="hospital-name">
-                โรงพยาบาลสมเด็จพระยุพราชเชียงของ
+                โรงพยาบาลสุขภาพดีจัง
               </p>
             </div>
 
@@ -2863,7 +2864,7 @@ async function printAddRec() {
 
           <footer class="footer">
             <p>
-              แผนกศัลยกรรมกระดูก โทร (053) 791206 ต่อ 610
+              แผนกศัลยกรรมกระดูก โทร (053) 791xxx ต่อ 610
             </p>
 
             <p>
@@ -3357,7 +3358,7 @@ function printData(e) {
               </h1>
 
               <p class="hospital-name">
-                โรงพยาบาลสมเด็จพระยุพราชเชียงของ
+                โรงพยาบาลสุขภาพดีจัง
               </p>
             </div>
 
@@ -3417,7 +3418,7 @@ function printData(e) {
 
           <footer class="footer">
             <p>
-              แผนกศัลยกรรมกระดูก โทร (053) 791206 ต่อ 610
+              แผนกศัลยกรรมกระดูก โทร (053) 791xxx ต่อ 610
             </p>
 
             <p>
@@ -4069,7 +4070,8 @@ async function clickShowTable(event) {
             id:webId,
             date1:date1,
             date2:date2,
-            username:gUser_name,
+            user_id:gUserId,
+            user_level:gUserLevel,
 
         }
 
@@ -5307,10 +5309,7 @@ async function addUser(event){
 
 async function editUserAPI(event) {
   event.preventDefault();
-  const btn1 = document.getElementById("btnEditUser");
-  const btn2 = document.getElementById("btnCancelUser");
-  if(btn1.disabled) return;
-  if(!validateAddUserForm()) return;
+
   const webId = getTokenFromUrl();
   if(!webId){
     await Swal.fire({
@@ -5321,7 +5320,29 @@ async function editUserAPI(event) {
       confirmButtonText:'ตกลง'
     });
     return;
+  } 
+
+  const user_id = $('#user_id').val()
+  const user_level = $('#user_level').val()
+  const active = $('#active').val()
+
+  if(user_id === '001'){
+    await Swal.fire({
+      position:'center',
+      icon:'error',
+      title:'คำเตือนการแก้ไข Super Admin',
+      text:'ไม่อนุญาตให้แก้ไขข้อมูล Super Admin!',
+      confirmButtonText:'ตกลง'
+    });
+    return;
   }
+
+  const btn1 = document.getElementById("btnEditUser");
+  const btn2 = document.getElementById("btnCancelUser");
+  if(btn1.disabled) return;  
+
+  if(!validateAddUserForm()) return;  
+  
   const modalElement = document.getElementById('userFormModal');
   const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
   const closeButtons = [...modalElement.querySelectorAll('[data-bs-dismiss="modal"]')];
@@ -5335,12 +5356,12 @@ async function editUserAPI(event) {
     showSpin3();
     const obj = {
       id:webId,
-      user_id:$('#user_id').val(),
+      user_id:user_id,
       user_name:$('#user_name').val(),
       user_password:$('#user_password').val(),
       user_realname:$('#user_realname').val(),
-      user_level:$('#user_level').val(),
-      active:$('#active').val(),
+      user_level:user_level,
+      active:active,
       admin_rec_id:gUserId || ""
     };
     const fd = new FormData();
